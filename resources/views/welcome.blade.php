@@ -26,42 +26,8 @@
     </head>
     <body class="antialiased text-slate-900 overflow-x-hidden">
         
-        <!-- Navigation Bar (PhoneBD Style) -->
-        <nav class="sticky top-0 w-full z-50 bg-white border-b border-slate-200 shadow-sm">
-            <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-                <!-- Logo -->
-                <a href="/" class="flex items-center space-x-2">
-                    <div class="w-10 h-10 bg-brand-blue flex items-center justify-center text-white shadow-md">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col -space-y-1">
-                        <span class="text-xl font-extrabold tracking-tight text-slate-800">Phone<span class="brand-blue">BD</span></span>
-                        <span class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400">Discussion</span>
-                    </div>
-                </a>
-
-                <!-- Search (Header Style) -->
-                <div class="hidden md:flex flex-1 max-w-lg mx-12">
-                    <form action="{{ route('search') }}" method="GET" class="w-full relative">
-                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Search for phones or topics..." class="w-full pl-10 pr-4 py-2.5 bg-slate-100 border-none text-sm focus:ring-2 focus:ring-blue-500/20 transition-all outline-none">
-                        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                    </form>
-                </div>
-
-                <!-- Nav Links -->
-                <div class="flex items-center space-x-6">
-                    <a href="/" class="text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors">Home</a>
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="text-sm font-bold text-white bg-brand-blue px-6 py-2.5 hover:bg-blue-700 transition-all shadow-lg shadow-blue-100">Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}" class="text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors">Login</a>
-                        <a href="{{ route('register') }}" class="text-sm font-bold text-white bg-brand-blue px-6 py-2.5 hover:bg-blue-700 transition-all shadow-lg shadow-blue-100">Sign Up</a>
-                    @endauth
-                </div>
-            </div>
-        </nav>
+        <!-- Navigation Bar (Unified) -->
+        @include('layouts.navigation')
 
         <!-- Main Content Area -->
         <main class="max-w-7xl mx-auto px-4 py-10">

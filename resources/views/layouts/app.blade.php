@@ -23,6 +23,8 @@
                 backdrop-filter: blur(10px);
                 border: 1px solid rgba(255, 255, 255, 0.2);
             }
+            /* Global reset for any remaining radius */
+            * { border-radius: 0 !important; }
         </style>
     </head>
     <body class="antialiased bg-slate-50 text-slate-800">

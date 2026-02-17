@@ -15,6 +15,18 @@ class DiscussionController extends Controller
 {
     public function index(Request $request)
     {
+        // Sidebar data: Top 5 most discussed phones (Common for all views)
+        $trendingPhoneIds = Discussion::where('status', 'approved')
+            ->selectRaw('phone_id, count(*) as count')
+            ->groupBy('phone_id')
+            ->orderBy('count', 'desc')
+            ->limit(5)
+            ->pluck('phone_id');
+
+        $trendingPhones = Phone::whereIn('id', $trendingPhoneIds)
+            ->where('is_published', true)
+            ->get();
+
         if ($request->has('q') && !empty($request->get('q'))) {
             $search = $request->get('q');
             
@@ -37,7 +49,8 @@ class DiscussionController extends Controller
 
             return view('welcome', [
                 'phones' => $phones,
-                'isSearch' => true
+                'isSearch' => true,
+                'trendingPhones' => $trendingPhones
             ]);
         }
 
@@ -60,18 +73,6 @@ class DiscussionController extends Controller
         }
 
         $discussions = $query->paginate(15);
-
-        // Sidebar data: Top 5 most discussed phones
-        $trendingPhoneIds = Discussion::where('status', 'approved')
-            ->selectRaw('phone_id, count(*) as count')
-            ->groupBy('phone_id')
-            ->orderBy('count', 'desc')
-            ->limit(5)
-            ->pluck('phone_id');
-
-        $trendingPhones = Phone::whereIn('id', $trendingPhoneIds)
-            ->where('is_published', true)
-            ->get();
 
         return view('welcome', compact('discussions', 'trendingPhones'));
     }
