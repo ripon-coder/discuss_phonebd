@@ -15,8 +15,20 @@ class Phone extends Model
      */
     protected $connection = 'mysql_main';
 
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'products';
+
     use HasFactory;
 
+
+    public function getNameAttribute(): string
+    {
+        return $this->title;
+    }
 
     public function discussions(): HasMany
     {

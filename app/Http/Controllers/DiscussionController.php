@@ -13,6 +13,74 @@ use Illuminate\Support\Str;
 
 class DiscussionController extends Controller
 {
+    public function index(Request $request)
+    {
+        if ($request->has('q') && !empty($request->get('q'))) {
+            $search = $request->get('q');
+            
+            // Product-based search
+            $phones = Phone::where('is_published', true)
+                ->where('title', 'like', "%{$search}%")
+                ->paginate(15);
+
+            // Manually fetch counts since withCount doesn't work across connections
+            $phoneIds = $phones->pluck('id')->toArray();
+            $counts = Discussion::whereIn('phone_id', $phoneIds)
+                ->where('status', 'approved')
+                ->selectRaw('phone_id, count(*) as count')
+                ->groupBy('phone_id')
+                ->pluck('count', 'phone_id');
+
+            foreach ($phones as $phone) {
+                $phone->setAttribute('discussions_count', $counts[$phone->id] ?? 0);
+            }
+
+            return view('welcome', [
+                'phones' => $phones,
+                'isSearch' => true
+            ]);
+        }
+
+        // Default home feed with sorting
+        $sort = $request->get('sort', 'recent');
+        
+        $query = Discussion::where('status', 'approved')
+            ->with(['phone', 'user'])
+            ->withCount(['votes', 'replies' => function($query) {
+                $query->where('status', 'approved');
+            }]);
+
+        if ($sort === 'popular') {
+            $query->orderBy('replies_count', 'desc')
+                  ->orderBy('votes_count', 'desc')
+                  ->orderBy('created_at', 'desc');
+        } else {
+            $query->orderBy('is_pinned', 'desc')
+                  ->orderBy('created_at', 'desc');
+        }
+
+        $discussions = $query->paginate(15);
+
+        // Sidebar data: Top 5 most discussed phones
+        $trendingPhoneIds = Discussion::where('status', 'approved')
+            ->selectRaw('phone_id, count(*) as count')
+            ->groupBy('phone_id')
+            ->orderBy('count', 'desc')
+            ->limit(5)
+            ->pluck('phone_id');
+
+        $trendingPhones = Phone::whereIn('id', $trendingPhoneIds)
+            ->where('is_published', true)
+            ->get();
+
+        return view('welcome', compact('discussions', 'trendingPhones'));
+    }
+
+    public function search(Request $request)
+    {
+        return $this->index($request);
+    }
+
     public function show($slug)
     {
         $phone = Phone::where('slug', $slug)->firstOrFail();

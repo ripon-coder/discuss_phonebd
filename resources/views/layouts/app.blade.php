@@ -8,29 +8,46 @@
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        
+        <style>
+            body { font-family: 'Plus Jakarta Sans', sans-serif; }
+            h1, h2, h3, h4, .font-heading { font-family: 'Outfit', sans-serif; }
+            .glass-panel {
+                background: rgba(255, 255, 255, 0.7);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+        </style>
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+    <body class="antialiased bg-slate-50 text-slate-800">
+        <div class="min-h-screen">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            @if (isset($header))
+                <header class="bg-white/50 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200">
+                    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
-            @endisset
+            @endif
 
             <!-- Page Content -->
-            <main>
+            <main class="py-1">
                 {{ $slot }}
             </main>
         </div>
+        
+        <footer class="py-12 bg-white border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-6 text-center">
+                <p class="text-sm font-bold text-slate-400">&copy; {{ date('Y') }} PhoneBD Discuss. All rights reserved.</p>
+            </div>
+        </footer>
     </body>
 </html>
